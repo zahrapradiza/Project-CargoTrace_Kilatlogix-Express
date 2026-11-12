@@ -57,22 +57,24 @@ class DatabaseSeeder extends Seeder
             'company_name' => 'Pacific Maritime Trading',
         ]);
 
-        // 2. Carriers
+        // 2. Carriers (KLX-REG, KLX-CARGO, KLX-AIR, MAERSK)
         $carriers = collect([
-            ['code' => 'KLX-EXP', 'name' => 'KilatLogix Super Express', 'contact_email' => 'express@kilatlogix.test', 'phone' => '+62-21-5550-1000', 'transport_mode' => 'AIR', 'is_active' => true],
+            ['code' => 'KLX-REG', 'name' => 'KilatLogix Regular', 'contact_email' => 'regular@kilatlogix.test', 'phone' => '+62-21-5550-1000', 'transport_mode' => 'ROAD', 'is_active' => true],
             ['code' => 'KLX-CARGO', 'name' => 'KilatLogix Heavy Cargo', 'contact_email' => 'cargo@kilatlogix.test', 'phone' => '+62-21-5550-2000', 'transport_mode' => 'ROAD', 'is_active' => true],
             ['code' => 'KLX-AIR', 'name' => 'KilatLogix AirFreight', 'contact_email' => 'airfreight@kilatlogix.test', 'phone' => '+65-6555-3000', 'transport_mode' => 'AIR', 'is_active' => true],
             ['code' => 'MAERSK', 'name' => 'Maersk SeaLine', 'contact_email' => 'ops@maersk-partner.test', 'phone' => '+31-10-555-4000', 'transport_mode' => 'SEA', 'is_active' => true],
         ])->mapWithKeys(fn ($c) => [$c['code'] => Carrier::create($c)]);
 
-        // 3. 12 Global Locations across Southeast Asia, Europe, North America, and Australia
+        // 3. 14 Global Locations (Banda Aceh, Medan, Jakarta, Surabaya, Singapore, Rotterdam, Tokyo, Sydney, etc.)
         $locationsData = [
+            ['code' => 'ID-BTJ-HUB', 'name' => 'KilatLogix Banda Aceh Drop Point', 'city' => 'Banda Aceh', 'country' => 'Indonesia', 'type' => 'HUB', 'latitude' => 5.5483000, 'longitude' => 95.3238000],
+            ['code' => 'ID-MES-HUB', 'name' => 'KilatLogix Medan Sumatra Hub', 'city' => 'Medan', 'country' => 'Indonesia', 'type' => 'HUB', 'latitude' => 3.5952000, 'longitude' => 98.6722000],
             ['code' => 'ID-JKT-HUB', 'name' => 'KilatLogix Jakarta Mega Hub', 'city' => 'Jakarta', 'country' => 'Indonesia', 'type' => 'HUB', 'latitude' => -6.1754000, 'longitude' => 106.8272000],
             ['code' => 'ID-SUB-PORT', 'name' => 'Tanjung Perak Port Hub', 'city' => 'Surabaya', 'country' => 'Indonesia', 'type' => 'PORT', 'latitude' => -7.2043000, 'longitude' => 112.7332000],
-            ['code' => 'ID-BDG-WH', 'name' => 'Bandung Logistics Warehouse', 'city' => 'Bandung', 'country' => 'Indonesia', 'type' => 'WAREHOUSE', 'latitude' => -6.9175000, 'longitude' => 107.6191000],
             ['code' => 'SG-SIN-PORT', 'name' => 'Port of Singapore Terminal', 'city' => 'Singapore', 'country' => 'Singapore', 'type' => 'PORT', 'latitude' => 1.2644000, 'longitude' => 103.8220000],
             ['code' => 'MY-PKG-PORT', 'name' => 'Port Klang Distribution Hub', 'city' => 'Klang', 'country' => 'Malaysia', 'type' => 'PORT', 'latitude' => 3.0005000, 'longitude' => 101.3919000],
             ['code' => 'TH-BKK-AIR', 'name' => 'Suvarnabhumi Cargo Terminal', 'city' => 'Bangkok', 'country' => 'Thailand', 'type' => 'AIRPORT', 'latitude' => 13.6900000, 'longitude' => 100.7501000],
+            ['code' => 'JP-TYO-PORT', 'name' => 'Port of Tokyo Oi Terminal', 'city' => 'Tokyo', 'country' => 'Japan', 'type' => 'PORT', 'latitude' => 35.6168000, 'longitude' => 139.7795000],
             ['code' => 'NL-RTM-PORT', 'name' => 'Port of Rotterdam Maasvlakte', 'city' => 'Rotterdam', 'country' => 'Netherlands', 'type' => 'PORT', 'latitude' => 51.9496000, 'longitude' => 4.1453000],
             ['code' => 'DE-FRA-AIR', 'name' => 'Frankfurt CargoCity Hub', 'city' => 'Frankfurt', 'country' => 'Germany', 'type' => 'AIRPORT', 'latitude' => 50.0379000, 'longitude' => 8.5622000],
             ['code' => 'US-LAX-PORT', 'name' => 'Port of Los Angeles Gateway', 'city' => 'Los Angeles', 'country' => 'USA', 'type' => 'PORT', 'latitude' => 33.7361000, 'longitude' => -118.2615000],
@@ -90,21 +92,21 @@ class DatabaseSeeder extends Seeder
         // 4. Seed 16 Realistic Shipments (KLX-2026-0001 .. KLX-2026-0016)
         $specs = [
             ['num' => 'KLX-2026-0001', 'cust' => $customer1, 'car' => 'MAERSK', 'orig' => 'ID-JKT-HUB', 'dest' => 'NL-RTM-PORT', 'hops' => ['SG-SIN-PORT', 'MY-PKG-PORT'], 'status' => 'IN_TRANSIT', 'cargo' => 'Semiconductor Assembly Kits', 'wt' => 1450.5, 'cbm' => 6.4, 'delay_h' => 18, 'exception' => ['CUSTOMS_HOLD', 'HIGH', 'OPEN', 'Customs inspection hold at Port Klang transit terminal pending HS-code clearance.']],
-            ['num' => 'KLX-2026-0002', 'cust' => $customer1, 'car' => 'KLX-AIR', 'orig' => 'ID-JKT-HUB', 'dest' => 'DE-FRA-AIR', 'hops' => ['SG-SIN-PORT'], 'status' => 'IN_TRANSIT', 'cargo' => 'Medical Cold-Chain Diagnostics', 'wt' => 320.0, 'cbm' => 1.8, 'delay_h' => 4, 'exception' => ['WEATHER_DELAY', 'MEDIUM', 'INVESTIGATING', 'Crosswind turbulence rerouting flight corridor over Bay of Bengal.']],
-            ['num' => 'KLX-2026-0003', 'cust' => $customer1, 'car' => 'KLX-EXP', 'orig' => 'ID-BDG-WH', 'dest' => 'AU-SYD-PORT', 'hops' => ['ID-JKT-HUB', 'SG-SIN-PORT'], 'status' => 'DELIVERED', 'cargo' => 'Precision Robotics Components', 'wt' => 540.0, 'cbm' => 2.5, 'delay_h' => 0, 'exception' => null],
-            ['num' => 'KLX-2026-0004', 'cust' => $customer2, 'car' => 'MAERSK', 'orig' => 'SG-SIN-PORT', 'dest' => 'US-LAX-PORT', 'hops' => ['MY-PKG-PORT'], 'status' => 'IN_TRANSIT', 'cargo' => 'Solar Inverter Modules', 'wt' => 4200.0, 'cbm' => 18.2, 'delay_h' => 30, 'exception' => ['PORT_CONGESTION', 'HIGH', 'OPEN', 'Berth congestion at Trans-Pacific transshipment terminal causing 30h vessel delay.']],
+            ['num' => 'KLX-2026-0002', 'cust' => $customer1, 'car' => 'KLX-AIR', 'orig' => 'ID-BTJ-HUB', 'dest' => 'JP-TYO-PORT', 'hops' => ['ID-MES-HUB', 'SG-SIN-PORT'], 'status' => 'IN_TRANSIT', 'cargo' => 'Gayo Specialty Coffee & Cold-Chain Extracts', 'wt' => 320.0, 'cbm' => 1.8, 'delay_h' => 4, 'exception' => ['WEATHER_DELAY', 'MEDIUM', 'INVESTIGATING', 'Crosswind turbulence rerouting flight corridor over South China Sea.']],
+            ['num' => 'KLX-2026-0003', 'cust' => $customer1, 'car' => 'KLX-AIR', 'orig' => 'ID-JKT-HUB', 'dest' => 'AU-SYD-PORT', 'hops' => ['ID-SUB-PORT', 'SG-SIN-PORT'], 'status' => 'DELIVERED', 'cargo' => 'Precision Robotics Components', 'wt' => 540.0, 'cbm' => 2.5, 'delay_h' => 0, 'exception' => null],
+            ['num' => 'KLX-2026-0004', 'cust' => $customer2, 'car' => 'MAERSK', 'orig' => 'SG-SIN-PORT', 'dest' => 'US-LAX-PORT', 'hops' => ['JP-TYO-PORT'], 'status' => 'IN_TRANSIT', 'cargo' => 'Solar Inverter Modules', 'wt' => 4200.0, 'cbm' => 18.2, 'delay_h' => 30, 'exception' => ['PORT_CONGESTION', 'HIGH', 'OPEN', 'Berth congestion at Tokyo transshipment terminal causing 30h vessel delay.']],
             ['num' => 'KLX-2026-0005', 'cust' => $customer2, 'car' => 'KLX-AIR', 'orig' => 'TH-BKK-AIR', 'dest' => 'US-JFK-AIR', 'hops' => ['DE-FRA-AIR'], 'status' => 'DELIVERED', 'cargo' => 'Optical Fiber Transceivers', 'wt' => 185.0, 'cbm' => 0.9, 'delay_h' => 0, 'exception' => ['DOCUMENTATION_ISSUE', 'LOW', 'RESOLVED', 'Commercial invoice verified and cleared by Frankfurt hub customs desk.']],
-            ['num' => 'KLX-2026-0006', 'cust' => $customer1, 'car' => 'KLX-CARGO', 'orig' => 'ID-BDG-WH', 'dest' => 'ID-SUB-PORT', 'hops' => ['ID-JKT-HUB'], 'status' => 'PICKED_UP', 'cargo' => 'Industrial Packaging Rollers', 'wt' => 980.0, 'cbm' => 4.2, 'delay_h' => 0, 'exception' => null],
-            ['num' => 'KLX-2026-0007', 'cust' => $customer2, 'car' => 'KLX-EXP', 'orig' => 'AU-MEL-WH', 'dest' => 'SG-SIN-PORT', 'hops' => ['AU-SYD-PORT'], 'status' => 'IN_TRANSIT', 'cargo' => 'Pharmaceutical Lab Reagents', 'wt' => 210.0, 'cbm' => 1.1, 'delay_h' => 0, 'exception' => null],
+            ['num' => 'KLX-2026-0006', 'cust' => $customer1, 'car' => 'KLX-REG', 'orig' => 'ID-BTJ-HUB', 'dest' => 'ID-SUB-PORT', 'hops' => ['ID-MES-HUB', 'ID-JKT-HUB'], 'status' => 'IN_TRANSIT', 'cargo' => 'Industrial Packaging Rollers', 'wt' => 980.0, 'cbm' => 4.2, 'delay_h' => 0, 'exception' => null],
+            ['num' => 'KLX-2026-0007', 'cust' => $customer2, 'car' => 'KLX-AIR', 'orig' => 'AU-MEL-WH', 'dest' => 'SG-SIN-PORT', 'hops' => ['AU-SYD-PORT'], 'status' => 'IN_TRANSIT', 'cargo' => 'Pharmaceutical Lab Reagents', 'wt' => 210.0, 'cbm' => 1.1, 'delay_h' => 0, 'exception' => null],
             ['num' => 'KLX-2026-0008', 'cust' => $customer1, 'car' => 'MAERSK', 'orig' => 'ID-SUB-PORT', 'dest' => 'AU-MEL-WH', 'hops' => ['AU-SYD-PORT'], 'status' => 'BOOKED', 'cargo' => 'Automotive Spare Parts', 'wt' => 2350.0, 'cbm' => 9.5, 'delay_h' => 0, 'exception' => null],
             ['num' => 'KLX-2026-0009', 'cust' => $customer2, 'car' => 'KLX-AIR', 'orig' => 'US-JFK-AIR', 'dest' => 'NL-RTM-PORT', 'hops' => ['DE-FRA-AIR'], 'status' => 'IN_TRANSIT', 'cargo' => 'Avionics Telemetry Sensors', 'wt' => 410.0, 'cbm' => 2.0, 'delay_h' => 14, 'exception' => ['WEATHER_DELAY', 'MEDIUM', 'OPEN', 'North Atlantic storm system delaying cargo uplift from JFK.']],
-            ['num' => 'KLX-2026-0010', 'cust' => $customer1, 'car' => 'KLX-CARGO', 'orig' => 'ID-JKT-HUB', 'dest' => 'ID-BDG-WH', 'hops' => [], 'status' => 'CREATED', 'cargo' => 'Server Rack Enclosures', 'wt' => 640.0, 'cbm' => 3.1, 'delay_h' => 0, 'exception' => null],
+            ['num' => 'KLX-2026-0010', 'cust' => $customer1, 'car' => 'KLX-CARGO', 'orig' => 'ID-JKT-HUB', 'dest' => 'ID-MES-HUB', 'hops' => [], 'status' => 'CREATED', 'cargo' => 'Server Rack Enclosures', 'wt' => 640.0, 'cbm' => 3.1, 'delay_h' => 0, 'exception' => null],
             ['num' => 'KLX-2026-0011', 'cust' => $customer2, 'car' => 'MAERSK', 'orig' => 'MY-PKG-PORT', 'dest' => 'NL-RTM-PORT', 'hops' => ['SG-SIN-PORT'], 'status' => 'DELIVERED', 'cargo' => 'Natural Rubber Industrial Sheets', 'wt' => 5600.0, 'cbm' => 22.0, 'delay_h' => 0, 'exception' => null],
-            ['num' => 'KLX-2026-0012', 'cust' => $customer1, 'car' => 'KLX-EXP', 'orig' => 'SG-SIN-PORT', 'dest' => 'TH-BKK-AIR', 'hops' => [], 'status' => 'PICKED_UP', 'cargo' => 'IoT Fleet Trackers', 'wt' => 95.0, 'cbm' => 0.4, 'delay_h' => 0, 'exception' => null],
+            ['num' => 'KLX-2026-0012', 'cust' => $customer1, 'car' => 'KLX-REG', 'orig' => 'ID-MES-HUB', 'dest' => 'SG-SIN-PORT', 'hops' => [], 'status' => 'PICKED_UP', 'cargo' => 'IoT Fleet Trackers', 'wt' => 95.0, 'cbm' => 0.4, 'delay_h' => 0, 'exception' => null],
             ['num' => 'KLX-2026-0013', 'cust' => $customer2, 'car' => 'KLX-AIR', 'orig' => 'DE-FRA-AIR', 'dest' => 'ID-JKT-HUB', 'hops' => ['TH-BKK-AIR'], 'status' => 'IN_TRANSIT', 'cargo' => 'CNC Milling Spindles', 'wt' => 760.0, 'cbm' => 2.8, 'delay_h' => 26, 'exception' => ['CUSTOMS_HOLD', 'HIGH', 'INVESTIGATING', 'Import permit verification requested at Jakarta Soekarno-Hatta customs desk.']],
             ['num' => 'KLX-2026-0014', 'cust' => $customer1, 'car' => 'KLX-CARGO', 'orig' => 'ID-SUB-PORT', 'dest' => 'ID-JKT-HUB', 'hops' => [], 'status' => 'DELIVERED', 'cargo' => 'Retail POS Terminals', 'wt' => 310.0, 'cbm' => 1.4, 'delay_h' => 0, 'exception' => null],
-            ['num' => 'KLX-2026-0015', 'cust' => $customer2, 'car' => 'MAERSK', 'orig' => 'US-LAX-PORT', 'dest' => 'AU-SYD-PORT', 'hops' => [], 'status' => 'BOOKED', 'cargo' => 'Lithium Battery Storage Packs', 'wt' => 3100.0, 'cbm' => 11.6, 'delay_h' => 0, 'exception' => null],
-            ['num' => 'KLX-2026-0016', 'cust' => $customer1, 'car' => 'KLX-AIR', 'orig' => 'TH-BKK-AIR', 'dest' => 'ID-JKT-HUB', 'hops' => ['SG-SIN-PORT'], 'status' => 'DELIVERED', 'cargo' => 'Smart Grid Power Meters', 'wt' => 420.0, 'cbm' => 1.9, 'delay_h' => 5, 'exception' => null],
+            ['num' => 'KLX-2026-0015', 'cust' => $customer2, 'car' => 'MAERSK', 'orig' => 'JP-TYO-PORT', 'dest' => 'AU-SYD-PORT', 'hops' => [], 'status' => 'BOOKED', 'cargo' => 'Lithium Battery Storage Packs', 'wt' => 3100.0, 'cbm' => 11.6, 'delay_h' => 0, 'exception' => null],
+            ['num' => 'KLX-2026-0016', 'cust' => $customer1, 'car' => 'KLX-AIR', 'orig' => 'TH-BKK-AIR', 'dest' => 'ID-BTJ-HUB', 'hops' => ['ID-MES-HUB'], 'status' => 'DELIVERED', 'cargo' => 'Smart Grid Power Meters', 'wt' => 420.0, 'cbm' => 1.9, 'delay_h' => 5, 'exception' => null],
         ];
 
         $stageSequence = ['CREATED', 'BOOKED', 'PICKED_UP', 'IN_TRANSIT', 'DELIVERED'];
@@ -145,7 +147,6 @@ class DatabaseSeeder extends Seeder
                 'declared_value' => ($idx + 1) * 2450,
             ]);
 
-            // Build authentic chronological checkpoints
             $targetIdx = array_search($spec['status'], $stageSequence, true);
             $eventTime = $baseTime->copy()->addHours(1);
 
@@ -175,7 +176,6 @@ class DatabaseSeeder extends Seeder
                     'is_exception' => false,
                 ]);
 
-                // Add secondary transit hop if IN_TRANSIT or DELIVERED with multiple hops
                 if ($st === 'IN_TRANSIT' && count($spec['hops']) > 1) {
                     $hop2 = $locations[$spec['hops'][1]];
                     $eventTime = $eventTime->copy()->addHours(18);
@@ -195,7 +195,6 @@ class DatabaseSeeder extends Seeder
                 $eventTime = $eventTime->copy()->addHours(16);
             }
 
-            // Evaluate deterministic ETA delay & create notifications
             $etaService->evaluate($shipment, $estimatedArrival, null, $operator);
 
             if ($spec['status'] === 'DELIVERED') {
@@ -207,7 +206,6 @@ class DatabaseSeeder extends Seeder
                 );
             }
 
-            // Create Exceptions if defined
             if ($spec['exception'] !== null) {
                 [$exType, $exSev, $exStatus, $exDesc] = $spec['exception'];
                 $ex = $exceptionService->openException($shipment, [
