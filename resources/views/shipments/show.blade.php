@@ -28,17 +28,37 @@
             </div>
 
             <!-- Live Weather at Latest Location -->
-            @if($initialWeather)
-                <div class="bg-gradient-to-br from-sky-900 to-slate-900 text-white rounded-2xl p-6 shadow-sm">
+            @if($latestLat !== null && $latestLng !== null)
+                <div id="klx-weather-card" class="bg-gradient-to-br from-sky-900 to-slate-900 text-white rounded-2xl p-6 shadow-sm">
                     <div class="text-xs font-bold uppercase tracking-wider text-sky-300 mb-1">Latest Location Weather</div>
-                    @if($initialWeather['available'])
-                        <div class="text-2xl font-black">{{ $initialWeather['temperature_c'] }}&deg;C &bull; {{ $initialWeather['condition'] }}</div>
-                        <div class="text-xs text-sky-200 mt-1">Wind: {{ $initialWeather['windspeed_kmh'] }} km/h &bull; Source: {{ $initialWeather['source'] }}</div>
-                    @else
-                        <div class="text-sm font-semibold text-sky-100">{{ $initialWeather['condition'] }}</div>
-                        <div class="text-xs text-sky-300 mt-1">{{ $initialWeather['note'] ?? 'Offline fallback mode active.' }}</div>
-                    @endif
+                    <div id="klx-weather-main" class="text-lg font-black">Loading live weather...</div>
+                    <div id="klx-weather-sub" class="text-xs text-sky-200 mt-1">Coords: {{ $latestLat }}, {{ $latestLng }}</div>
                 </div>
+                @push('scripts')
+                <script>
+                document.addEventListener('DOMContentLoaded', async () => {
+                    const mainEl = document.getElementById('klx-weather-main');
+                    const subEl = document.getElementById('klx-weather-sub');
+                    try {
+                        const res = await fetch(`{{ route('web.shipments.weather', $shipment) }}?lat={{ $latestLat }}&lng={{ $latestLng }}`, {
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        const payload = await res.json();
+                        const w = payload.data || {};
+                        if (w.available) {
+                            mainEl.textContent = `${w.temperature_c}°C • ${w.condition}`;
+                            subEl.textContent = `Wind: ${w.windspeed_kmh} km/h • Source: ${w.source}`;
+                        } else {
+                            mainEl.textContent = w.condition || 'Weather data unavailable';
+                            subEl.textContent = w.note || 'Offline fallback mode active.';
+                        }
+                    } catch (e) {
+                        mainEl.textContent = 'Weather data unavailable';
+                        subEl.textContent = 'Offline fallback mode active.';
+                    }
+                });
+                </script>
+                @endpush
             @endif
 
             <!-- Cargo Items Manifest -->

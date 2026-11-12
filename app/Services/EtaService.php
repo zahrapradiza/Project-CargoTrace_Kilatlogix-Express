@@ -25,12 +25,12 @@ class EtaService
         ?User $actor = null
     ): Shipment {
         $eta = match (true) {
-            $estimatedArrival instanceof Carbon => $estimatedArrival,
-            is_string($estimatedArrival) && $estimatedArrival !== '' => Carbon::parse($estimatedArrival),
-            default => $shipment->estimated_arrival,
+            $estimatedArrival instanceof Carbon => $estimatedArrival->copy()->startOfSecond(),
+            is_string($estimatedArrival) && $estimatedArrival !== '' => Carbon::parse($estimatedArrival)->startOfSecond(),
+            default => $shipment->estimated_arrival?->copy()->startOfSecond(),
         };
 
-        $expected = $shipment->expected_arrival;
+        $expected = $shipment->expected_arrival?->copy()->startOfSecond();
         $wasDelayed = (bool) $shipment->is_delayed;
         $oldDelayHours = (int) $shipment->delay_hours;
 
@@ -45,8 +45,8 @@ class EtaService
             return $shipment;
         }
 
-        $delayMinutes = $expected->diffInMinutes($eta);
-        $delayHours = max(1, (int) ceil($delayMinutes / 60));
+        $delaySeconds = (int) $expected->diffInSeconds($eta);
+        $delayHours = max(1, (int) ceil($delaySeconds / 3600));
         $thresholdHours = (int) config('cargotrace.delay_threshold_hours', 12);
         $severity = $this->classifySeverity($delayHours);
 

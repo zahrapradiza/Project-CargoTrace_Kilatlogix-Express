@@ -136,11 +136,8 @@ class ShipmentWebController extends Controller
         $latestEvent = $shipment->trackingEvents->last();
         $latestLat = $latestEvent?->latitude ?? $shipment->originLocation?->latitude;
         $latestLng = $latestEvent?->longitude ?? $shipment->originLocation?->longitude;
-        $initialWeather = ($latestLat !== null && $latestLng !== null)
-            ? $this->externalIntegrationService->getWeather((float) $latestLat, (float) $latestLng)
-            : null;
 
-        return view('shipments.show', compact('shipment', 'locations', 'layout', 'initialWeather'));
+        return view('shipments.show', compact('shipment', 'locations', 'layout', 'latestLat', 'latestLng'));
     }
 
     public function update(Request $request, Shipment $shipment): RedirectResponse

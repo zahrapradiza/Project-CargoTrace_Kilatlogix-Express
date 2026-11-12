@@ -18,6 +18,22 @@
         ];
     })->filter(fn ($e) => $e['latitude'] !== null && $e['longitude'] !== null)->values();
 
+    $originMapData = [
+        'name' => $shipment->originLocation?->name,
+        'city' => $shipment->originLocation?->city,
+        'country' => $shipment->originLocation?->country,
+        'lat' => $shipment->originLocation?->latitude,
+        'lng' => $shipment->originLocation?->longitude,
+    ];
+
+    $destinationMapData = [
+        'name' => $shipment->destinationLocation?->name,
+        'city' => $shipment->destinationLocation?->city,
+        'country' => $shipment->destinationLocation?->country,
+        'lat' => $shipment->destinationLocation?->latitude,
+        'lng' => $shipment->destinationLocation?->longitude,
+    ];
+
     $weatherEndpoint = $weatherUrl ?? route('web.shipments.weather', $shipment);
 @endphp
 
@@ -92,20 +108,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const mapEl = document.getElementById('klx-shipment-map');
     if (!mapEl || typeof L === 'undefined') return;
 
-    const origin = @json([
-        'name' => $shipment->originLocation?->name,
-        'city' => $shipment->originLocation?->city,
-        'country' => $shipment->originLocation?->country,
-        'lat' => $shipment->originLocation?->latitude,
-        'lng' => $shipment->originLocation?->longitude,
-    ]);
-    const destination = @json([
-        'name' => $shipment->destinationLocation?->name,
-        'city' => $shipment->destinationLocation?->city,
-        'country' => $shipment->destinationLocation?->country,
-        'lat' => $shipment->destinationLocation?->latitude,
-        'lng' => $shipment->destinationLocation?->longitude,
-    ]);
+    const origin = @json($originMapData);
+    const destination = @json($destinationMapData);
     const events = @json($eventsForMap);
     const weatherBaseUrl = @json($weatherEndpoint);
 
