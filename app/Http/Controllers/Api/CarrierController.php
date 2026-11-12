@@ -55,3 +55,4 @@ class CarrierController extends Controller
             ->setStatusCode(201);
     }
 }
+

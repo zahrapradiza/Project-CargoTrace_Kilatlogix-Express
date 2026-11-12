@@ -24,3 +24,4 @@ class StoreCarrierRequest extends FormRequest
         ];
     }
 }
+

@@ -231,3 +231,4 @@ class ShipmentService
         return sprintf('%s%04d', $pattern, $nextSequence);
     }
 }
+

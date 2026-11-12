@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Carrier;
+use App\Models\Location;
 use App\Models\Shipment;
 use App\Models\ShipmentException;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -39,11 +42,19 @@ class OperatorController extends Controller
             ->limit(10)
             ->get();
 
+        $activeShipments = Shipment::whereNotIn('current_status', [Shipment::STATUS_DELIVERED, Shipment::STATUS_CANCELLED])
+            ->orderByDesc('id')
+            ->get(['id', 'shipment_number', 'current_status']);
+
         $openExceptions = ShipmentException::with(['shipment', 'reporter'])
             ->where('status', '!=', 'RESOLVED')
             ->orderByDesc('detected_at')
             ->limit(8)
             ->get();
+
+        $locations = Location::orderBy('name')->get();
+        $customers = User::where('role', User::ROLE_CUSTOMER)->orderBy('name')->get();
+        $carriers = Carrier::where('is_active', true)->orderBy('name')->get();
 
         return view('operator.dashboard', compact(
             'activeCount',
@@ -51,7 +62,11 @@ class OperatorController extends Controller
             'openExceptionsCount',
             'deliveredTodayCount',
             'followUpShipments',
-            'openExceptions'
+            'activeShipments',
+            'openExceptions',
+            'locations',
+            'customers',
+            'carriers'
         ));
     }
 }

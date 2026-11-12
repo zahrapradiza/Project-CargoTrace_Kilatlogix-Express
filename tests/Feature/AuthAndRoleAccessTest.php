@@ -72,3 +72,4 @@ class AuthAndRoleAccessTest extends TestCase
         $this->actingAs($admin)->get('/admin/users')->assertStatus(200);
     }
 }
+

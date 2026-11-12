@@ -163,3 +163,4 @@ class ShipmentAuthorizationAndCrudTest extends TestCase
         $this->actingAs($this->customer1)->get("/shipments/{$c1ShipmentId}")->assertStatus(200);
     }
 }
+

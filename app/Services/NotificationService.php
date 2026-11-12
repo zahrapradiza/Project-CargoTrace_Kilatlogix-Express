@@ -60,3 +60,4 @@ class NotificationService
             ->update(['is_read' => true]);
     }
 }
+

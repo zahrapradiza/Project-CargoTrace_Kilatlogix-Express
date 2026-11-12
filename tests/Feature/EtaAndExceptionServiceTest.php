@@ -121,3 +121,4 @@ class EtaAndExceptionServiceTest extends TestCase
         $this->assertEquals('Fallback (Offline/Timeout)', $weather['source']);
     }
 }
+

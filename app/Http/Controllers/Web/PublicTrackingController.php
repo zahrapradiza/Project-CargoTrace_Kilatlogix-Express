@@ -56,3 +56,4 @@ class PublicTrackingController extends Controller
         ]);
     }
 }
+

@@ -43,3 +43,4 @@ class TrackingController extends Controller
             ->setStatusCode(201);
     }
 }
+

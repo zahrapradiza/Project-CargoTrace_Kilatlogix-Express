@@ -50,3 +50,4 @@ return [
         'nominatim_user_agent' => env('CARGOTRACE_NOMINATIM_USER_AGENT', 'CargoTrace-KilatLogix/1.0 (ops@kilatlogix.test)'),
     ],
 ];
+

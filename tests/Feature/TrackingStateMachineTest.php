@@ -93,3 +93,4 @@ class TrackingStateMachineTest extends TestCase
         $this->assertEquals('DELIVERED', $shipment->fresh()->current_status);
     }
 }
+

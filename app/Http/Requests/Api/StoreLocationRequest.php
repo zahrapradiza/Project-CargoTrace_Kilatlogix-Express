@@ -25,3 +25,4 @@ class StoreLocationRequest extends FormRequest
         ];
     }
 }
+

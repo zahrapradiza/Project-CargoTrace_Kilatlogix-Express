@@ -24,7 +24,9 @@
         <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
             <div class="text-xs font-bold uppercase text-slate-400">Delayed Shipments</div>
             <div class="text-3xl font-black text-rose-600 mt-1">{{ $delayedCount }}</div>
-            <div class="text-xs text-slate-500 mt-1">On-Time Rate: {{ $onTimeRate }}%</div>
+            <div class="text-xs text-slate-500 mt-1">
+                Delay Rate: {{ $totalShipments > 0 ? round(($delayedCount / $totalShipments) * 100, 1) : 0 }}% &bull; On-Time: {{ $onTimeRate }}%
+            </div>
         </div>
         <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
             <div class="text-xs font-bold uppercase text-slate-400">Open Exceptions</div>
@@ -154,3 +156,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 @endpush
+

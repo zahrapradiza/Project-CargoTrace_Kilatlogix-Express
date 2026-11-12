@@ -48,6 +48,22 @@ class ShipmentWebController extends Controller
             $query->where('carrier_id', $request->integer('carrier_id'));
         }
 
+        if ($request->filled('origin_location_id')) {
+            $query->where('origin_location_id', $request->integer('origin_location_id'));
+        }
+
+        if ($request->filled('destination_location_id')) {
+            $query->where('destination_location_id', $request->integer('destination_location_id'));
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->string('date_from'));
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->string('date_to'));
+        }
+
         if ($request->filled('delayed')) {
             if ($request->string('delayed')->toString() === '1') {
                 $query->where('is_delayed', true);
@@ -64,11 +80,19 @@ class ShipmentWebController extends Controller
             });
         }
 
-        $shipments = $query->orderByDesc('id')->paginate(12)->withQueryString();
+        match ($request->string('sort')->toString()) {
+            'oldest' => $query->orderBy('id'),
+            'eta_asc' => $query->orderBy('expected_arrival'),
+            'delay_desc' => $query->orderByDesc('delay_hours')->orderByDesc('id'),
+            default => $query->orderByDesc('id'),
+        };
+
+        $shipments = $query->paginate(12)->withQueryString();
         $carriers = Carrier::orderBy('name')->get();
+        $locations = Location::orderBy('name')->get();
         $layout = $this->resolveLayout($user);
 
-        return view('shipments.index', compact('shipments', 'carriers', 'layout'));
+        return view('shipments.index', compact('shipments', 'carriers', 'locations', 'layout'));
     }
 
     public function create(Request $request): View

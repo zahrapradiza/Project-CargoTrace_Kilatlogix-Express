@@ -5,32 +5,53 @@
 
 @section('content')
     <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-        <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
-            <form method="GET" class="flex flex-wrap items-center gap-2 flex-1">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Waybill or cargo type..."
-                    class="px-3.5 py-2 rounded-xl border border-slate-300 text-sm w-56">
-                <select name="status" class="px-3 py-2 rounded-xl border border-slate-300 text-sm">
+        <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+            <form method="GET" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 flex-1 text-xs">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Waybill or cargo..."
+                    class="col-span-2 px-3 py-2 rounded-xl border border-slate-300 text-sm">
+                <select name="status" class="px-2.5 py-2 rounded-xl border border-slate-300">
                     <option value="">All Statuses</option>
                     @foreach(config('cargotrace.statuses') as $st)
                         <option value="{{ $st }}" @selected(request('status') === $st)>{{ $st }}</option>
                     @endforeach
                 </select>
-                <select name="carrier_id" class="px-3 py-2 rounded-xl border border-slate-300 text-sm">
+                <select name="carrier_id" class="px-2.5 py-2 rounded-xl border border-slate-300">
                     <option value="">All Carriers</option>
                     @foreach($carriers as $carrier)
                         <option value="{{ $carrier->id }}" @selected((string) request('carrier_id') === (string) $carrier->id)>{{ $carrier->name }}</option>
                     @endforeach
                 </select>
-                <select name="delayed" class="px-3 py-2 rounded-xl border border-slate-300 text-sm">
+                <select name="origin_location_id" class="px-2.5 py-2 rounded-xl border border-slate-300">
+                    <option value="">Any Origin</option>
+                    @foreach($locations as $loc)
+                        <option value="{{ $loc->id }}" @selected((string) request('origin_location_id') === (string) $loc->id)>{{ $loc->code }} ({{ $loc->city }})</option>
+                    @endforeach
+                </select>
+                <select name="destination_location_id" class="px-2.5 py-2 rounded-xl border border-slate-300">
+                    <option value="">Any Destination</option>
+                    @foreach($locations as $loc)
+                        <option value="{{ $loc->id }}" @selected((string) request('destination_location_id') === (string) $loc->id)>{{ $loc->code }} ({{ $loc->city }})</option>
+                    @endforeach
+                </select>
+                <select name="delayed" class="px-2.5 py-2 rounded-xl border border-slate-300">
                     <option value="">All Schedules</option>
                     <option value="1" @selected(request('delayed') === '1')>Delayed Only</option>
                     <option value="0" @selected(request('delayed') === '0')>On Schedule</option>
                 </select>
-                <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-bold">Filter</button>
+                <select name="sort" class="px-2.5 py-2 rounded-xl border border-slate-300">
+                    <option value="newest" @selected(request('sort', 'newest') === 'newest')>Sort: Newest</option>
+                    <option value="oldest" @selected(request('sort') === 'oldest')>Sort: Oldest</option>
+                    <option value="eta_asc" @selected(request('sort') === 'eta_asc')>Sort: Soonest ETA</option>
+                    <option value="delay_desc" @selected(request('sort') === 'delay_desc')>Sort: Highest Delay</option>
+                </select>
+                <input type="date" name="date_from" value="{{ request('date_from') }}" title="From Date" class="px-2.5 py-2 rounded-xl border border-slate-300">
+                <input type="date" name="date_to" value="{{ request('date_to') }}" title="To Date" class="px-2.5 py-2 rounded-xl border border-slate-300">
+                <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold">Apply Filters</button>
+                <a href="{{ route('shipments.index') }}" class="px-3 py-2 rounded-xl border border-slate-300 text-center font-semibold text-slate-600 hover:bg-slate-50">Reset</a>
             </form>
 
             @can('create', App\Models\Shipment::class)
-                <a href="{{ route('shipments.create') }}" class="px-4 py-2.5 rounded-xl bg-[#FF5500] hover:bg-orange-600 text-white text-sm font-bold shadow-sm transition">
+                <a href="{{ route('shipments.create') }}" class="px-4 py-2.5 rounded-xl bg-[#FF5500] hover:bg-orange-600 text-white text-sm font-bold shadow-sm transition shrink-0">
                     + New Shipment
                 </a>
             @endcan

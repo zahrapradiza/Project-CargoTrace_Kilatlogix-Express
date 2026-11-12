@@ -64,3 +64,4 @@ class LocationController extends Controller
             ->setStatusCode(201);
     }
 }
+

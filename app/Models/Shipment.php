@@ -93,3 +93,4 @@ class Shipment extends Model
         return $this->hasMany(Notification::class, 'shipment_id');
     }
 }
+

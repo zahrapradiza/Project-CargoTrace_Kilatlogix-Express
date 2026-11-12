@@ -31,3 +31,4 @@ class UpdateShipmentRequest extends FormRequest
         ];
     }
 }
+

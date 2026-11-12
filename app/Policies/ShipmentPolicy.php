@@ -46,3 +46,4 @@ class ShipmentPolicy
         return $user->hasAnyRole([User::ROLE_ADMIN, User::ROLE_OPERATOR]);
     }
 }
+

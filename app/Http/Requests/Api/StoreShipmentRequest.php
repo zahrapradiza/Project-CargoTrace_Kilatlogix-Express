@@ -35,3 +35,4 @@ class StoreShipmentRequest extends FormRequest
         ];
     }
 }
+

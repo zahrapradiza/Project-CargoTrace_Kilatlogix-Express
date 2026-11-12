@@ -57,3 +57,4 @@ class ExceptionController extends Controller
         ]);
     }
 }
+

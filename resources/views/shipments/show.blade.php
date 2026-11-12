@@ -126,11 +126,21 @@
                                 </div>
                                 <div>
                                     <label class="block font-bold text-slate-600 mb-1">Hub / Location</label>
-                                    <select name="location_id" class="w-full px-3 py-2 rounded-lg border border-slate-300">
+                                    <select name="location_id" onchange="const o=this.options[this.selectedIndex];document.getElementById('cp-lat').value=o.dataset.lat||'';document.getElementById('cp-lng').value=o.dataset.lng||'';" class="w-full px-3 py-2 rounded-lg border border-slate-300">
                                         @foreach($locations as $loc)
-                                            <option value="{{ $loc->id }}">{{ $loc->code }} — {{ $loc->name }} ({{ $loc->city }})</option>
+                                            <option value="{{ $loc->id }}" data-lat="{{ $loc->latitude }}" data-lng="{{ $loc->longitude }}">{{ $loc->code }} — {{ $loc->name }} ({{ $loc->city }})</option>
                                         @endforeach
                                     </select>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block font-bold text-slate-600 mb-1">Latitude (optional)</label>
+                                        <input type="number" step="0.0000001" id="cp-lat" name="latitude" placeholder="Auto from location" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono">
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold text-slate-600 mb-1">Longitude (optional)</label>
+                                        <input type="number" step="0.0000001" id="cp-lng" name="longitude" placeholder="Auto from location" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono">
+                                    </div>
                                 </div>
                                 <div>
                                     <label class="block font-bold text-slate-600 mb-1">Checkpoint Description</label>
