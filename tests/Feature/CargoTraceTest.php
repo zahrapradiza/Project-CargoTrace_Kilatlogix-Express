@@ -172,3 +172,4 @@ class CargoTraceTest extends TestCase
         $this->assertEquals('HIGH', $shipment->fresh()->delay_severity);
     }
 }
+
