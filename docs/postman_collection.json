@@ -1,0 +1,261 @@
+{
+  "info": {
+    "_postman_id": "a7f2b5a8-9b7a-4b11-8e62-klx2026cargotrace",
+    "name": "CargoTrace — KilatLogix Express (KLX) API",
+    "description": "Complete Postman v2.1 collection for CargoTrace Global Shipment Visibility & Tracking Platform REST API (Laravel Sanctum).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "token", "value": "" },
+    { "key": "shipment_id", "value": "1" },
+    { "key": "exception_id", "value": "1" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"API Test Customer\",\n  \"email\": \"apicust@kilatlogix.test\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"phone\": \"+62-811-9000-123\",\n  \"company_name\": \"Garuda Freight Ltd\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/register", "host": ["{{base_url}}"], "path": ["api", "register"] }
+          }
+        },
+        {
+          "name": "Login (Issues Sanctum Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) { pm.collectionVariables.set('token', res.data.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"staff@kilatlogix.test\",\n  \"password\": \"password\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/login", "host": ["{{base_url}}"], "path": ["api", "login"] }
+          }
+        },
+        {
+          "name": "Get Authenticated User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/user", "host": ["{{base_url}}"], "path": ["api", "user"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/logout", "host": ["{{base_url}}"], "path": ["api", "logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shipments",
+      "item": [
+        {
+          "name": "List Shipments (Filtered & Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/api/shipments?status=IN_TRANSIT&per_page=15",
+              "host": ["{{base_url}}"],
+              "path": ["api", "shipments"],
+              "query": [
+                { "key": "status", "value": "IN_TRANSIT" },
+                { "key": "per_page", "value": "15" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Shipment (Admin/Operator)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": 3,\n  \"carrier_id\": 1,\n  \"origin_location_id\": 1,\n  \"destination_location_id\": 4,\n  \"cargo_type\": \"Precision Semiconductors\",\n  \"weight_kg\": 420.5,\n  \"volume_cbm\": 2.1,\n  \"expected_departure\": \"2026-11-12T10:00:00Z\",\n  \"expected_arrival\": \"2026-11-17T10:00:00Z\",\n  \"items\": [\n    {\n      \"item_name\": \"Silicon Wafer Tray\",\n      \"sku\": \"KLX-WFR-88\",\n      \"quantity\": 4,\n      \"weight_kg\": 105.1,\n      \"declared_value\": 12000\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/shipments", "host": ["{{base_url}}"], "path": ["api", "shipments"] }
+          }
+        },
+        {
+          "name": "Get Shipment Details",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/shipments/{{shipment_id}}", "host": ["{{base_url}}"], "path": ["api", "shipments", "{{shipment_id}}"] }
+          }
+        },
+        {
+          "name": "Update Shipment / ETA",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estimated_arrival\": \"2026-11-19T00:00:00Z\",\n  \"delay_reason\": \"Port berth congestion\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/shipments/{{shipment_id}}", "host": ["{{base_url}}"], "path": ["api", "shipments", "{{shipment_id}}"] }
+          }
+        },
+        {
+          "name": "Delete Shipment (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/shipments/{{shipment_id}}", "host": ["{{base_url}}"], "path": ["api", "shipments", "{{shipment_id}}"] }
+          }
+        },
+        {
+          "name": "Get Shipment Live Weather",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/shipments/{{shipment_id}}/weather", "host": ["{{base_url}}"], "path": ["api", "shipments", "{{shipment_id}}", "weather"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tracking & Exceptions",
+      "item": [
+        {
+          "name": "List Tracking Events",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/shipments/{{shipment_id}}/tracking", "host": ["{{base_url}}"], "path": ["api", "shipments", "{{shipment_id}}", "tracking"] }
+          }
+        },
+        {
+          "name": "Append Tracking Event",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location_id\": 4,\n  \"status\": \"IN_TRANSIT\",\n  \"description\": \"Cleared Singapore transshipment terminal and loaded onto connecting vessel.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/shipments/{{shipment_id}}/tracking", "host": ["{{base_url}}"], "path": ["api", "shipments", "{{shipment_id}}", "tracking"] }
+          }
+        },
+        {
+          "name": "List Shipment Exceptions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/shipments/{{shipment_id}}/exceptions", "host": ["{{base_url}}"], "path": ["api", "shipments", "{{shipment_id}}", "exceptions"] }
+          }
+        },
+        {
+          "name": "Open Shipment Exception",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exception_type\": \"CUSTOMS_HOLD\",\n  \"severity\": \"HIGH\",\n  \"description\": \"Customs clearance inspection required for HS-code verification.\",\n  \"location_id\": 4\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/shipments/{{shipment_id}}/exceptions", "host": ["{{base_url}}"], "path": ["api", "shipments", "{{shipment_id}}", "exceptions"] }
+          }
+        },
+        {
+          "name": "Update / Resolve Exception",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"RESOLVED\",\n  \"resolution_notes\": \"Customs documents verified and cargo released.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/exceptions/{{exception_id}}", "host": ["{{base_url}}"], "path": ["api", "exceptions", "{{exception_id}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Carriers & Locations",
+      "item": [
+        {
+          "name": "List Carriers",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/carriers", "host": ["{{base_url}}"], "path": ["api", "carriers"] }
+          }
+        },
+        {
+          "name": "Create Carrier (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"KLX-RAIL\",\n  \"name\": \"KilatLogix Rail Freight\",\n  \"contact_email\": \"rail@kilatlogix.test\",\n  \"phone\": \"+62-21-5550-7777\",\n  \"transport_mode\": \"RAIL\",\n  \"is_active\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/carriers", "host": ["{{base_url}}"], "path": ["api", "carriers"] }
+          }
+        },
+        {
+          "name": "List Locations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/locations", "host": ["{{base_url}}"], "path": ["api", "locations"] }
+          }
+        },
+        {
+          "name": "Create Location (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"JP-TYO-PORT\",\n  \"name\": \"Port of Tokyo Oi Terminal\",\n  \"city\": \"Tokyo\",\n  \"country\": \"Japan\",\n  \"type\": \"PORT\",\n  \"latitude\": 35.6168,\n  \"longitude\": 139.7795\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/locations", "host": ["{{base_url}}"], "path": ["api", "locations"] }
+          }
+        }
+      ]
+    }
+  ]
+}
